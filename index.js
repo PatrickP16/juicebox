@@ -2,6 +2,7 @@ const PORT = 3000;
 const express = require('express');
 const server = express();
 const apiRouter = require('./api');
+require('dotenv').config();
 
 const bodyParser = require('body-parser');
 server.use(bodyParser.json());

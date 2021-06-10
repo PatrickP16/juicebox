@@ -1,4 +1,5 @@
 //Starting module 3 with the provided code
+require('dotenv').config();
 
 const { Client } = require('pg') // imports the pg module
 
@@ -84,6 +85,20 @@ async function getUserById(userId) {
   } catch (error) {
     throw error;
   }
+}
+
+async function getUserByUsername(username) {
+    try {
+        const { rows: [ user ] } = await client.query(`
+            SELECT *
+            FROM users
+            WHERE username = $1;
+        `, [ username ]);
+
+        return user;
+    } catch( error ){
+        throw error;
+    }
 }
 
 /**
@@ -378,6 +393,7 @@ module.exports = {
   updateUser,
   getAllUsers,
   getUserById,
+  getUserByUsername,
   createPost,
   updatePost,
   getAllPosts,
@@ -527,62 +543,3 @@ module.exports = {
 //                  }
 
 
-//How fullstack did it 
-// const { Client } = require('pg'); //import the pg module  
-
-// //supply the db name and location of the database
-// const client = new Client('postgres://localhost:5432/juicebox-dev');
-
-
-// async function getAllUsers() {
-//     const { rows } = await client.query(
-//         `SELECT id, username, password, name, location, active
-//         FROM users;`
-//     );
-//     return rows;
-//          //rows[0] for when it is a single item in the table 
-//         //because it is still in an array no matter the length
-// }
-
-// async function createUser({ username, password, name, location }) {
-//     try {
-//         const { rows } = await client.query(`
-//             INSERT INTO users( username , password, name, location )
-//             VALUES ( $1, $2, $3, $4 )
-//             RETURNING *;
-//         `, [ username, password, name, location ]);
-//         return rows
-//               //rows[0] for when it is a single item in the table 
-//              //because it is still in an array no matter the length
-//     } catch (error) {
-//         throw error;
-//     }
-// }
-
-// async function updateUser( id, fields ) {
-//     //build the set string
-//     const setString = Object.keys(fields).map(
-//         ( key , index ) => `"${ key }" = $${ index + 2}`
-//     ).join(',');
-
-//     //return early if this is called without fields
-//     if ( setString.length === 0 ) {
-//         return;
-//     }
-
-//     try {
-//         const { rows } = await client.query(`
-//         UPDATE users 
-//         SET ${ setString }
-//         WHERE id = $1
-//         RETURNING *;
-//         `, [ id , ...Object.values(fields)]);
-
-//         return rows[0];
-//     } catch ( error ) {
-//         throw error;
-//     }
-// }
-
-
-// module.exports = { client, getAllUsers, createUser, updateUser }

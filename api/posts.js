@@ -13,7 +13,7 @@ postsRouter.get('/', async(req, res) => {
     const posts = await getAllPosts();
 
     res.send({
-        "posts": [posts]
+        posts
     });
 });
 
